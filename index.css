@@ -470,3 +470,22 @@ button:hover {
 }
 
 
+.stt{
+  font-family: 'Fjalla One', sans-serif;
+  color: #0570c9;
+  margin-left: 43%;
+  margin-top: 40px;
+  background-color: white;
+  width: 75px;
+  padding: 30px;
+  border-radius: 10px;
+  transition: box-shadow .5s, border-color .5s;
+}
+.stt:hover{
+  cursor: pointer;
+  box-shadow: #222 0px 4px 12px; 
+}
+.s:hover{
+  box-shadow: #222 0px 4px 12px;
+  cursor: pointer;
+}
