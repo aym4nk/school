@@ -4,37 +4,24 @@
   const $ = s => document.querySelector(s);
 
   /* =========================
-     AUTH
-  ========================= */
-  function ensureAuth() {
-    if (!window.Auth || !Auth.getCurrentUser()) {
-      window.location.href = 'index.html';
-    }
-  }
-
-  /* =========================
      STORAGE
   ========================= */
   function store(key) {
     return {
-      get() {
-        return JSON.parse(localStorage.getItem(key) || '[]');
-      },
-      save(data) {
-        localStorage.setItem(key, JSON.stringify(data));
-      },
+      get: () => JSON.parse(localStorage.getItem(key) || '[]'),
+      save: d => localStorage.setItem(key, JSON.stringify(d)),
       add(item) {
         item.id = Date.now().toString();
-        const data = this.get();
-        data.push(item);
-        this.save(data);
+        const d = this.get();
+        d.push(item);
+        this.save(d);
       },
       update(id, patch) {
-        const data = this.get();
-        const i = data.findIndex(x => x.id === id);
+        const d = this.get();
+        const i = d.findIndex(x => x.id === id);
         if (i !== -1) {
-          data[i] = { ...data[i], ...patch };
-          this.save(data);
+          d[i] = { ...d[i], ...patch };
+          this.save(d);
         }
       },
       remove(id) {
@@ -53,193 +40,196 @@
   /* =========================
      NAVIGATION
   ========================= */
-  function setupNavigation() {
-    [
-      ['#nav-home', '#panel-home'],
-      ['#nav-students', '#panel-students'],
-      ['#nav-subjects', '#panel-subjects'],
-      ['#nav-teachers', '#panel-teachers']
-    ].forEach(([btn, panel]) => {
-      $(btn).onclick = () => {
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  [
+    ['#nav-home', '#panel-home'],
+    ['#nav-students', '#panel-students'],
+    ['#nav-subjects', '#panel-subjects'],
+    ['#nav-teachers', '#panel-teachers']
+  ].forEach(([btn, panel]) => {
+    $(btn).onclick = () => {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      $(panel).classList.add('active');
+      $(btn).classList.add('active');
+      if (panel === '#panel-home') setTimeout(renderStats, 50);
+    };
+  });
 
-        $(btn).classList.add('active');
-        $(panel).classList.add('active');
+  /* =========================
+     STATS + CHARTS
+  ========================= */
+  let mainChart = null;
+  let genderChart = null;
 
-        if (panel === '#panel-home') {
-  setTimeout(() => {
-    renderStats();
-  }, 50);
-}
+  function renderStats() {
+    const students = Students.get();
+    const subjects = Subjects.get();
+    const teachers = Teachers.get();
 
-      };
+    $('#count-students').textContent = students.length;
+    $('#count-subjects').textContent = subjects.length;
+    $('#count-teachers').textContent = teachers.length;
+
+    renderMainChart(students.length, subjects.length, teachers.length);
+    renderGenderChart(students);
+  }
+
+  function renderMainChart(students, subjects, teachers) {
+    const c = $('#dashboardChart');
+    if (!c) return;
+    if (mainChart) mainChart.destroy();
+
+    mainChart = new Chart(c, {
+      type: 'doughnut',
+      data: {
+        labels: ['Élèves', 'Matières', 'Professeurs'],
+        datasets: [{
+          data: [students, subjects, teachers],
+          backgroundColor: ['#4da3ff', '#a30023', '#5cd65c']
+        }]
+      },
+      options: {
+        cutout: '60%',
+        plugins: { legend: { position: 'bottom' } }
+      }
     });
   }
 
-  /* =========================
-     DASHBOARD STATS
-  ========================= */
-  function renderStats() {
-    $('#count-students').textContent = Students.get().length;
-    $('#count-subjects').textContent = Subjects.get().length;
-    $('#count-teachers').textContent = Teachers.get().length;
+  function renderGenderChart(students) {
+    const c = $('#genderChart');
+    if (!c) return;
+    if (genderChart) genderChart.destroy();
+
+    let male = 0, female = 0;
+    students.forEach(s => {
+      if (!s.sexe) return;
+      const x = s.sexe.toLowerCase();
+      if (x === 'male' || x === 'homme') male++;
+      if (x === 'female' || x === 'femme') female++;
+    });
+
+    genderChart = new Chart(c, {
+      type: 'bar',
+      data: {
+        labels: ['Garçons', 'Filles'],
+        datasets: [{
+          data: [male, female],
+          backgroundColor: ['#4da3ff', '#ff69b4']
+        }]
+      },
+      options: { scales: { y: { beginAtZero: true } } }
+    });
   }
 
   /* =========================
      STUDENTS
   ========================= */
-  function renderStudents() {
-    const tbody = $('#studentsTable tbody');
-    tbody.innerHTML = '';
+  function studentFormInit() {
+    const f = $('#studentForm');
+    f.onsubmit = e => {
+      e.preventDefault();
+      const data = {
+        name: f.name.value,
+        sexe: f.sexe.value,
+        classroom: f.classroom.value
+      };
+      f.id.value ? Students.update(f.id.value, data) : Students.add(data);
+      f.reset(); f.id.value = '';
+      renderStudents(); renderStats();
+    };
+  }
 
+  function renderStudents() {
+    const tb = $('#studentsTable tbody');
+    tb.innerHTML = '';
     Students.get().forEach(s => {
-      tbody.innerHTML += `
+      tb.innerHTML += `
         <tr>
           <td>${s.name}</td>
           <td>${s.sexe}</td>
           <td>${s.classroom}</td>
           <td>
             <button data-edit="${s.id}">Modifier</button>
-            <button data-del="${s.id}">Suppr</button>
+            <button data-del="${s.id}">Supprimer</button>
           </td>
         </tr>`;
     });
 
-    tbody.querySelectorAll('[data-edit]').forEach(b =>
-      b.onclick = () => editStudent(b.dataset.edit)
+    tb.querySelectorAll('[data-edit]').forEach(b =>
+      b.onclick = () => {
+        const s = Students.find(b.dataset.edit);
+        const f = $('#studentForm');
+        f.id.value = s.id;
+        f.name.value = s.name;
+        f.sexe.value = s.sexe;
+        f.classroom.value = s.classroom;
+      }
     );
-    tbody.querySelectorAll('[data-del]').forEach(b =>
-      b.onclick = () => { Students.remove(b.dataset.del); renderStudents(); }
+
+    tb.querySelectorAll('[data-del]').forEach(b =>
+      b.onclick = () => {
+        if (confirm('Supprimer cet élève ?')) {
+          Students.remove(b.dataset.del);
+          renderStudents();
+          renderStats();
+        }
+      }
     );
   }
-
-  function editStudent(id) {
-    const s = Students.find(id);
-    if (!s) return;
-    const f = $('#studentForm');
-    f.id.value = s.id;
-    f.name.value = s.name;
-    f.sexe.value = s.sexe;
-    f.classroom.value = s.classroom;
-  }
-
-function studentFormInit() {
-  const f = $('#studentForm');
-
-  f.onsubmit = e => {
-    e.preventDefault();
-
-    const data = {
-      name: f.name.value,
-      sexe: f.sexe.value,
-      classroom: f.classroom.value
-    };
-
-    if (f.id.value) {
-      Students.update(f.id.value, data);
-    } else {
-      Students.add(data);
-    }
-
-    f.reset();
-    f.id.value = ''; // 👈 IMPORTANT : vider l'id
-
-    renderStudents();
-    renderStats();
-  };
-
-  $('#studentCancel').onclick = () => {
-    f.reset();
-    f.id.value = ''; // 👈 IMPORTANT AUSSI
-  };
-}
-
 
   /* =========================
      SUBJECTS
   ========================= */
-  function renderSubjects() {
-    const tbody = $('#subjectsTable tbody');
-    tbody.innerHTML = '';
-
-    Subjects.get().forEach(s => {
-      tbody.innerHTML += `
-        <tr>
-          <td>${s.name}</td>
-          <td>${s.code}</td>
-          <td>
-            <button data-edit="${s.id}">Modifier</button>
-            <button data-del="${s.id}">Suppr</button>
-          </td>
-        </tr>`;
-    });
-
-    tbody.querySelectorAll('[data-edit]').forEach(b =>
-      b.onclick = () => editSubject(b.dataset.edit)
-    );
-    tbody.querySelectorAll('[data-del]').forEach(b =>
-      b.onclick = () => { Subjects.remove(b.dataset.del); renderSubjects(); }
-    );
-  }
-
-  function editSubject(id) {
-    const s = Subjects.find(id);
-    const f = $('#subjectForm');
-    f.id.value = s.id;
-    f.name.value = s.name;
-    f.code.value = s.code;
-  }
-
   function subjectFormInit() {
     const f = $('#subjectForm');
     f.onsubmit = e => {
       e.preventDefault();
       const data = { name: f.name.value, code: f.code.value };
       f.id.value ? Subjects.update(f.id.value, data) : Subjects.add(data);
-      f.reset();
-      renderSubjects();
+      f.reset(); f.id.value = '';
+      renderSubjects(); renderStats();
     };
-    $('#subjectCancel').onclick = () => f.reset();
+  }
+
+  function renderSubjects() {
+    const tb = $('#subjectsTable tbody');
+    tb.innerHTML = '';
+    Subjects.get().forEach(s => {
+      tb.innerHTML += `
+        <tr>
+          <td>${s.name}</td>
+          <td>${s.code}</td>
+          <td>
+            <button data-edit="${s.id}">Modifier</button>
+            <button data-del="${s.id}">Supprimer</button>
+          </td>
+        </tr>`;
+    });
+
+    tb.querySelectorAll('[data-edit]').forEach(b =>
+      b.onclick = () => {
+        const s = Subjects.find(b.dataset.edit);
+        const f = $('#subjectForm');
+        f.id.value = s.id;
+        f.name.value = s.name;
+        f.code.value = s.code;
+      }
+    );
+
+    tb.querySelectorAll('[data-del]').forEach(b =>
+      b.onclick = () => {
+        if (confirm('Supprimer cette matière ?')) {
+          Subjects.remove(b.dataset.del);
+          renderSubjects();
+          renderStats();
+        }
+      }
+    );
   }
 
   /* =========================
      TEACHERS
   ========================= */
-  function renderTeachers() {
-    const tbody = $('#teachersTable tbody');
-    tbody.innerHTML = '';
-
-    Teachers.get().forEach(t => {
-      tbody.innerHTML += `
-        <tr>
-          <td>${t.name}</td>
-          <td>${t.email}</td>
-          <td>${t.subject}</td>
-          <td>
-            <button data-edit="${t.id}">Modifier</button>
-            <button data-del="${t.id}">Suppr</button>
-          </td>
-        </tr>`;
-    });
-
-    tbody.querySelectorAll('[data-edit]').forEach(b =>
-      b.onclick = () => editTeacher(b.dataset.edit)
-    );
-    tbody.querySelectorAll('[data-del]').forEach(b =>
-      b.onclick = () => { Teachers.remove(b.dataset.del); renderTeachers(); }
-    );
-  }
-
-  function editTeacher(id) {
-    const t = Teachers.find(id);
-    const f = $('#teacherForm');
-    f.id.value = t.id;
-    f.name.value = t.name;
-    f.email.value = t.email;
-    f.subject.value = t.subject;
-  }
-
   function teacherFormInit() {
     const f = $('#teacherForm');
     f.onsubmit = e => {
@@ -250,134 +240,79 @@ function studentFormInit() {
         subject: f.subject.value
       };
       f.id.value ? Teachers.update(f.id.value, data) : Teachers.add(data);
-      f.reset();
-      renderTeachers();
+      f.reset(); f.id.value = '';
+      renderTeachers(); renderStats();
     };
-    $('#teacherCancel').onclick = () => f.reset();
+  }
+
+  function renderTeachers() {
+    const tb = $('#teachersTable tbody');
+    tb.innerHTML = '';
+    Teachers.get().forEach(t => {
+      tb.innerHTML += `
+        <tr>
+          <td>${t.name}</td>
+          <td>${t.email}</td>
+          <td>${t.subject}</td>
+          <td>
+            <button data-edit="${t.id}">Modifier</button>
+            <button data-del="${t.id}">Supprimer</button>
+          </td>
+        </tr>`;
+    });
+
+    tb.querySelectorAll('[data-edit]').forEach(b =>
+      b.onclick = () => {
+        const t = Teachers.find(b.dataset.edit);
+        const f = $('#teacherForm');
+        f.id.value = t.id;
+        f.name.value = t.name;
+        f.email.value = t.email;
+        f.subject.value = t.subject;
+      }
+    );
+
+    tb.querySelectorAll('[data-del]').forEach(b =>
+      b.onclick = () => {
+        if (confirm('Supprimer ce professeur ?')) {
+          Teachers.remove(b.dataset.del);
+          renderTeachers();
+          renderStats();
+        }
+      }
+    );
   }
 
   /* =========================
      LOGOUT
   ========================= */
   function setupLogout() {
-    $('#logoutBtn').onclick = () => Auth.logout();
+    const btn = $('#logoutBtn');
+    if (!btn) return;
+    btn.onclick = () => {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'index.html';
+    };
   }
 
   /* =========================
      INIT
   ========================= */
   document.addEventListener('DOMContentLoaded', () => {
-    ensureAuth();
-
-    // Force Accueil au chargement
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     $('#panel-home').classList.add('active');
     $('#nav-home').classList.add('active');
 
-    setupNavigation();
     studentFormInit();
     subjectFormInit();
     teacherFormInit();
+
     renderStudents();
     renderSubjects();
     renderTeachers();
     renderStats();
+
     setupLogout();
   });
-  function renderStats() {
-    $('#count-students').textContent = Students.get().length;
-    $('#count-subjects').textContent = Subjects.get().length;
-    $('#count-teachers').textContent = Teachers.get().length;
-
-    renderChart();
-    renderGenderChart();
-  }
-let chart = null;
-
-function renderChart() {
-  const canvas = document.getElementById('dashboardChart');
-  if (!canvas) return;
-
-  const students = Students.get().length;
-  const subjects = Subjects.get().length;
-  const teachers = Teachers.get().length;
-
-  const ctx = canvas.getContext('2d');
-
-  if (chart) chart.destroy();
-
-  chart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Élèves', 'Matières', 'Professeurs'],
-      datasets: [{
-        data: [students, subjects, teachers],
-        backgroundColor: [
-          '#4da3ff',
-          '#a30023ff',
-          '#5cd65c'
-        ],
-        borderWidth: 2
-      }]
-    },
-    options: {
-      responsive: true,
-      cutout: '60%',
-      plugins: {
-        legend: {
-          position: 'bottom'
-        }
-      }
-    }
-  });
-}
-let genderChart = null;
-
-function renderGenderChart() {
-  const students = Students.get();
-
-  let male = 0;
-  let female = 0;
-
-  students.forEach(s => {
-    if (!s.sexe) return;
-    const sexe = s.sexe.toLowerCase();
-    if (sexe === 'male' || sexe === 'jeune') male++;
-    if (sexe === 'female' || sexe === 'fille') female++;
-  });
-
-  const canvas = document.getElementById('genderChart');
-  if (!canvas) return;
-
-  const ctx = canvas.getContext('2d');
-  if (genderChart) genderChart.destroy();
-
-  genderChart = new Chart(ctx, {
-    type: 'bar', 
-    data: {
-      labels: ['Garçons', 'Filles'],
-      datasets: [{
-        label: 'Répartition des élèves',
-        data: [male, female],
-        backgroundColor: ['#4da3ff', '#ff69b4']
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            stepSize: 1
-          }
-        }
-      }
-    }
-  });
-}
 
 })();
-
-
-
