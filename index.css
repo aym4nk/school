@@ -43,9 +43,7 @@ body {
   position: relative;
   overflow: hidden;
   width: 20%;
-  font-family: 'Bartino', sans-serif;
-  font-family: 'Bartino Outline', sans-serif;
-  font-family: 'Bartino Stripes', sans-serif;
+  font-family: 'Wix Madefor Display', sans-serif;                                                                                      
   font-size: large;                             
   letter-spacing: 5px;
   border: #b3aeae 3px solid;
@@ -471,20 +469,18 @@ button:hover {
 
 
 .stt{
-  font-family: 'Fjalla One', sans-serif;
-  color: #0570c9;
-  margin-left: 43%;
+  font-family: 'IBM Plex Mono', sans-serif;                                    
+  color: white;
+  margin-left: 10%;
   margin-top: 40px;
-  background-color: white;
-  width: 75px;
+  background-color: #0570c9 ;
+  width: 80px;
   padding: 30px;
   border-radius: 10px;
   transition: box-shadow .5s, border-color .5s;
+  padding-right: 75px;
 }
-.stt:hover{
-  cursor: pointer;
-  box-shadow: #222 0px 4px 12px; 
-}
+
 .s:hover{
   box-shadow: #222 0px 4px 12px;
   cursor: pointer;
