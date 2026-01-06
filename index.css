@@ -1,0 +1,472 @@
+/* ==========================
+   Variables
+   ========================== */
+:root {
+  --primary: #0b74de;
+  --accent: #93a4b8;
+  --bg: #f7fbff;
+  --card-bg: #ffffff;
+  --muted: #666;
+  --error: #284c8f;
+}
+
+/* ==========================
+   Base / Layout
+   ========================== */
+body {
+  font-family: 'Poppins', Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 735px;
+  margin: 0;
+  padding: 0px;
+  margin-left: -30px;
+  margin-right: -19.9px;
+  overflow: hidden;
+  padding-left: 20px;
+  padding-top: -40px;
+}
+
+.card {
+  background: var(--card-bg);
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(11,116,222,0.08);
+  width: 40%;
+}
+.carda {
+  background-color: rgba(0, 117, 226, 0.856);
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(11,116,222,0.08);
+  position: relative;
+  overflow: hidden;
+  width: 20%;
+  font-family: 'Bartino', sans-serif;
+  font-family: 'Bartino Outline', sans-serif;
+  font-family: 'Bartino Stripes', sans-serif;
+  font-size: large;                             
+  letter-spacing: 5px;
+  border: #b3aeae 3px solid;
+                                                
+                                                
+}
+.carda2{
+  width: 80%;
+  margin-left: 120px;
+}
+.carda::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 6px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--primary));
+}
+.card::before {
+  content: '';
+  left: 0;
+  top: 0;
+  height: 6px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--primary));
+}
+
+/* ==========================
+   Brand / Header
+   ========================== */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  margin-top: 70px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.brand-text .school-name {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 18px;
+  display: block;
+}
+
+.brand-text .tagline {
+  font-size: 12px;
+  color: var(--muted);
+  display: block;
+  margin-top: 2px;
+}
+
+.card h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  color: #222;
+}
+
+/* ==========================
+   Forms
+   ========================== */
+.field {
+  margin-bottom: 14px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #333;
+  font-weight: 600;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #e0e6ef;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background: #fbfdff;
+  transition: box-shadow .15s, border-color .15s;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 6px 20px rgba(11,116,222,0.08);
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #ffffff;
+  color: #0570c9;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 6px 16px rgba(56, 81, 105, 0.12);
+  transition: transform .08s ease;
+  border: #0570c9 2px solid;
+  transition: background-color 0.3s, color 0.3s;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  border: rgb(83, 163, 255) 2px solid;
+  background-color: #0570c9;
+  color: white;
+
+}
+
+.error {
+  color: var(--error);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+#error,
+#regError {
+  display: none;
+}
+
+.muted {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 10px;
+  text-align: center;
+}
+
+.muted a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.bottom-note {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #888;
+  text-align: center;
+}
+
+/* Utilities */
+.hidden {
+  display: none !important;
+}
+
+/* ==========================
+   Dashboard / Components
+   ========================== */
+/* Navbar stacked vertically (rows) */
+.navbar {
+  display: block;
+  padding-right:  20px;
+  padding-left: 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  color: #000;
+  background-color: rgb(12, 87, 148);
+  margin-bottom: 200px;
+
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.nav-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  margin-left: 12px;
+}
+
+.nav-title {
+  font-weight: 700;
+  color: rgb(255, 255, 255);
+  font-family: 'Fjalla One', sans-serif;
+  font-size: 22px;
+  letter-spacing: 4px;
+  margin-top: 10px;
+  text-shadow: black 0px 0px 25px;
+                                                
+   /* title text black */
+}
+
+/* Nav-right becomes a vertical list of buttons */
+.nav-right {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 80px;
+}
+
+.nav-btn {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  text-align: left;
+  color: #0570c9; /* buttons text black */
+  font-family: 'Inter Tight', sans-serif;
+  letter-spacing: 5px;     
+  transition: background-color 0.3s, color 0.3s;  
+}
+
+.nav-btn.active {
+
+  background-color: #0570c9;
+  box-shadow: #222 0px 4px 12px;
+  color: rgb(8, 8, 58); 
+  text-shadow: black 0px 0px 35px;
+  color: rgb(8, 8, 58);
+  width: 106%;/* keep active button text white for contrast */
+}
+
+/* Keep logout button styled but make it align to the right of the column */
+.nav-btn.secondary {
+  background: transparent;
+  color: black; /* secondary button text black */
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  width: auto;
+  align-self: flex-end;
+  padding: 8px 10px;
+  margin-top: -120px;
+  margin-left: 30px;
+}
+.nav-btn.secondary:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: rgb(163, 0, 0);
+  transition: background-color 0.3s, color 0.3s;
+}
+.main {
+  display: flex;
+  gap: 20px;
+  background-image: url("images/etu.png");
+  background-size: cover;        
+  background-position: center;   
+  background-repeat: no-repeat;  
+  min-height: 100vh;
+  margin-bottom: 0; 
+}
+
+.panel {
+  display: none;
+  width: 100%;
+}
+
+.panel.active {
+  display: block;
+}
+
+.entity-form {
+  background: #fbfdff;
+  border: 1px solid #eef3fb;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  width: 70%;
+  margin-left: 11%;
+  transition: box-shadow .5s, border-color .5s;
+}
+.entity-form:hover{
+  box-shadow: #222 0px 4px 12px;                                               
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  color: black;
+  margin-bottom: 8px;
+}
+
+.form-row label {
+  width: 80px;
+  font-weight: 600;
+  color: #0570c9;
+  font-family: 'Pilcrow', sans-serif;
+  font-size: small;
+  letter-spacing:2px;
+  text-shadow: #0570c9 0px 5px 10px;                                             
+                                                
+}
+
+.form-row input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: black;
+  border: 1px solid #e8eef8;
+}
+.form-row input:focus{
+  border: #000 2px solid;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 25px;
+  color: #0570c9;
+
+}
+
+.entity-table {
+  background: #fff;
+  border: 3px solid #4c6a9b;
+  border-radius: 10px;
+  width: 85%;
+  margin-left: 5%;
+  margin-top: 60px;
+}
+
+.entity-table th,
+.entity-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border: 1px solid #4c6a9b;
+  border-radius: 5px;
+
+}
+
+.entity-table .small {
+  padding: 6px 8px;
+  font-size: 13px;
+  margin-right: 6px;
+}
+
+.small.danger {
+  background: rgb(239, 149, 149);
+  border: 1px solid red;
+}
+
+.list-wrap {
+  max-height: 400px;
+  overflow: auto;
+}
+
+@media (max-width: 820px) {
+  .main {
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .card {
+    width: 100%;
+    padding: 20px;
+    border-radius: 10px;
+  }
+}
+.body_log {
+  background-image: url("images/logimg.png");
+  background-size: cover;
+  height: 500px;
+}
+.logo{
+  background-color:#0570c9;
+}
+.card{
+  margin-top: 14%;
+}
+.brand{
+  margin-top: 20px;
+}
+.body_sign {
+  background-image: url("images/sign2.png");
+  background-size: cover;
+  height: 500px;
+}
+.ti{
+  margin-top: 40px;
+  margin-left: 80px;
+  color: #e8eef8;
+  background-color: #0570c9;
+  width: 240px;
+  padding: 10px;
+  border-radius: 10px;
+  border: #000 4px solid;
+  font-family: 'Escopedia', sans-serif;
+  box-shadow: #222 0px 4px 12px;     
+                                          
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* fond de la scrollbar */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* barre (thumb) */
+::-webkit-scrollbar-thumb {
+  background: #0570c9;
+}
+
+/* hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #0570c9;
+}
+
+

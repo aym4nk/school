@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
+    <link rel="icon" href="/images/icons8-school-64.png" type="image/png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <script src="auth.js"></script>
+</head>
+<body class="body_sign">
+  <div class="card">
+    <div class="brand">
+      <img src="images/icons8-school-64.png" alt="Logo" class="logo">
+      <div class="brand-text">
+        <span class="school-name">École Moderne</span>
+        <small class="tagline">Inscription</small>
+      </div>
+    </div>
+    <h2>Créer un compte</h2>
+    <div id="regError" class="error hidden"></div>
+    <form id="signupForm" novalidate>
+      <div class="field">
+        <label for="name">Nom complet</label>
+        <input type="text" id="name" name="name" placeholder="Votre nom" required>
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="exemple@exemple.com" required>
+      </div>
+
+      <div class="field">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" placeholder="Votre mot de passe" required minlength="6">
+      </div>
+
+      <div class="field">
+        <label for="confirm">Confirmer le mot de passe</label>
+        <input type="password" id="confirm" name="confirm" placeholder="Confirmez le mot de passe" required minlength="6">
+      </div>
+
+      <button type="submit">S'inscrire</button>
+    </form>
+
+    <div class="muted">Déjà inscrit ? <a href="index.html">Se connecter</a></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('signupForm');
+      const errorDiv = document.getElementById('regError');
+
+      function showError(message) {
+        errorDiv.classList.remove('hidden');
+        errorDiv.textContent = message;
+      }
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (!form.checkValidity()) {
+          showError('Veuillez remplir correctement le formulaire.');
+          return;
+        }
+
+        const name = form.name.value.trim();
+        const email = form.email.value.trim().toLowerCase();
+        const password = form.password.value;
+        const confirm = form.confirm.value;
+
+        if (password !== confirm) {
+          showError('Les mots de passe ne correspondent pas.');
+          return;
+        }
+
+        const result = Auth.addUser({ name: name, email: email, password: password, createdAt: new Date().toISOString() });
+        if (!result.success) {
+          showError(result.error || 'Impossible de créer le compte.');
+          return;
+        }
+
+        // Auto-login et redirection vers dashboard
+        Auth.login(email, password);
+        window.location.href = 'dashboard.html';
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <link rel="icon" href="/images/icons8-school-64.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <script src="auth.js"></script>
+</head>
+<body class="body_log">
+  <div class="card">
+    <div class="brand">
+      <img src="images/icons8-school-64.png" alt="Logo" class="logo">
+      <div class="brand-text">
+        <span class="school-name">École Moderne</span>
+        <small class="tagline">bonjour mr | mme. ADMIN</small>
+      </div>
+    </div>
+    <h2>Se connecter</h2>
+    <div id="error" class="error hidden"></div>
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="exemple@exemple.com" required>
+      </div>
+      <div class="field">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" placeholder="Votre mot de passe" required minlength="6">
+      </div>
+      <button type="submit">Connexion</button>
+    </form>
+    <div class="muted">Pas encore de compte ? <a href="signin.html">S'inscrire</a></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('loginForm');
+      const errorDiv = document.getElementById('error');
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (!form.checkValidity()) {
+          errorDiv.classList.remove('hidden');
+          errorDiv.textContent = 'Veuillez remplir correctement le formulaire.';
+          return;
+        }
+
+        // Masquer les erreurs
+        errorDiv.classList.add('hidden');
+
+        const email = form.email.value.trim();
+        const password = form.password.value;
+
+        // Essayer d'authentifier via l'entité Auth
+        const res = Auth.login(email, password);
+
+        // Enregistrer la tentative de connexion
+        Auth.addSubmission({ email: email, password: password, createdAt: new Date().toISOString() });
+
+        if (!res.success) {
+          errorDiv.classList.remove('hidden');
+          errorDiv.textContent = res.error || 'Échec de la connexion.';
+          return;
+        }
+
+        form.reset();
+        // Rediriger vers le tableau de bord
+        window.location.href = 'dashboard.html';
+      });
+    });
+  </script>
+</body>
+</html>
