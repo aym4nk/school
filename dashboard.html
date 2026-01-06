@@ -4,25 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tableau de bord</title>
-  <link rel="icon" href="/images/icons8-school-64.png" type="image/png">
-  <link href="https://fonts.cdnfonts.com/css/fjalla-one-2" rel="stylesheet">
-  <link href="https://fonts.cdnfonts.com/css/inter-tight" rel="stylesheet">
-  <link href="https://fonts.cdnfonts.com/css/bartino" rel="stylesheet">
-  <link href="https://fonts.cdnfonts.com/css/escopedia" rel="stylesheet">
-  <link href="https://fonts.cdnfonts.com/css/pilcrow" rel="stylesheet">
-  <link href="https://fonts.cdnfonts.com/css/wix-madefor-display" rel="stylesheet">
-  <link href="https://fonts.cdnfonts.com/css/ibm-plex-mono" rel="stylesheet">
-                
-                
-  
-  
-  
-  
-  
-  
 
+  <link rel="icon" href="/images/icons8-school-64.png" type="image/png">
+
+  <!-- Fonts -->
+  <link href="https://fonts.cdnfonts.com/css/inter-tight" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/ibm-plex-mono" rel="stylesheet">
+
+  <!-- CSS -->
   <link rel="stylesheet" href="index.css">
-  
+
+  <!-- JS -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="auth.js"></script>
   <script src="dashboard.js" defer></script>
@@ -30,198 +22,270 @@
 
 <body>
 
+<div style="display:flex; width:100%; height:100vh;">
 
-  <div style="display:flex; width:100%; height:100vh;">
-
-
-    <nav class="navbar" style="height:100vh; width:260px;">
-      <div>
-        <div class="nav-left">
-          <img src="images/icons8-school-64.png" alt="Logo" class="nav-logo">
-          <span class="nav-title">École dashboard</span>
-        </div>
-
-        <div class="nav-right">
-          <button id="nav-home" class="nav-btn active">Accueil</button>
-          <button id="nav-students" class="nav-btn">Élèves</button>
-          <button id="nav-subjects" class="nav-btn">Matières</button>
-          <button id="nav-teachers" class="nav-btn">Professeurs</button>
-        </div>
+  <!-- ================= NAVBAR ================= -->
+  <nav class="navbar" style="width:260px; height:100vh;">
+    <div>
+      <div class="nav-left">
+        <img src="images/icons8-school-64.png" class="nav-logo" alt="logo">
+        <span class="nav-title">École Dashboard</span>
       </div>
 
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-      <button id="logoutBtn" class="nav-btn secondary">Se déconnecter</button>
-    </nav>
+      <div class="nav-right">
+        <button id="nav-home" class="nav-btn active">Accueil</button>
+        <button id="nav-students" class="nav-btn">Élèves</button>
+        <button id="nav-subjects" class="nav-btn">Matières</button>
+        <button id="nav-teachers" class="nav-btn">Professeurs</button>
+        <button id="nav-classes" class="nav-btn">Classes</button>
+        <button id="nav-notes" class="nav-btn">Notes</button>
+      </div>
+    </div>
 
+    <button id="logoutBtn" class="nav-btn secondary">Se déconnecter</button>
+  </nav>
 
-    <main class="main" style="flex:1; height:100vh; overflow:auto;">
-            
-      <section id="panel-home" class="panel active">
-            <h2>Tableau de bord</h2>
-            <p>Vue d'ensemble de votre établissement</p>
+  <!-- ================= MAIN ================= -->
+  <main class="main" style="flex:1; overflow:auto;">
 
-      <div class="carda2" style="display:flex; gap:20px; margin-top:40px;">
-        <div class="carda" style="flex:1; text-align:center;">
+    <!-- ===== ACCUEIL ===== -->
+    <section id="panel-home" class="panel active">
+      <h2>Tableau de bord</h2>
+      <p>Vue d'ensemble de votre établissement</p>
+
+      <div class="carda2">
+        <div class="carda">
           <h4>Élèves</h4>
-          <p id="count-students" style="font-size:32px;">0</p>
+          <p id="count-students">0</p>
         </div>
-        <div class="cardaa" style="flex:1; text-align:center;">
+        <div class="cardaa">
           <h4>Matières</h4>
-          <p id="count-subjects" style="font-size:32px;">0</p>
+          <p id="count-subjects">0</p>
         </div>
-        <div class="cardaaa" style="flex:1; text-align:center;">
+        <div class="cardaaa">
           <h4>Professeurs</h4>
-          <p id="count-teachers" style="font-size:32px;">0</p>
+          <p id="count-teachers">0</p>
+        </div>
+        <div class="carda">
+          <h4>Classes</h4>
+          <p id="count-classes">0</p>
+        </div>
+        <div class="cardaa">
+          <h4>Notes</h4>
+          <p id="count-notes">0</p>
         </div>
       </div>
-      <h2 class="stt">Status:</h2>
-      <div class="s" style="
-      display: flex;
-       background-color: white;
-       width: 80%;
-        margin-left: 9%;
-        margin-top: 60px;
-        border-radius: 20px;
-        padding-bottom: 20px;
-        transition: box-shadow .5s, border-color .5s;
-        ">
 
-        <div class="chart" style="width:30%;margin-left: 60px;">
+      <h3 class="stt">Statistiques</h3>
+      <div class="s">
+        <div class="chart" style="width:45%">
           <canvas id="dashboardChart"></canvas>
-          
         </div>
-        <div class="chart" style="width:40%;margin-left: 90px;margin-top: 50px; height: 200px;">
+        <div class="chart" style="width:45%">
           <canvas id="genderChart"></canvas>
         </div>
-        
       </div>
     </section>
- 
-      <section id="panel-students" class="panel active">
-        <h3 class="ti">Gestion des eleves</h3>
 
-        <form id="studentForm" class="entity-form">
-          <input type="hidden" name="id">
+    <!-- ===== ÉLÈVES ===== -->
+    <section id="panel-students" class="panel">
+      <h3 class="ti">Gestion des élèves</h3>
 
-          <div class="form-row">
-            <label>Nom</label>
-            <input name="name" required>
-          </div>
+      <form id="studentForm" class="entity-form">
+        <input type="hidden" name="id">
 
-          <div class="form-row">
-            <label>sexe</label>
-            <input name="sexe" type="input" required>
-          </div>
-
-          <div class="form-row">
-            <label>Classe</label>
-            <input name="classroom" required>
-          </div>
-
-          <div class="form-actions">
-            <button class="btn" type="submit">Enregistrer</button>
-            <button class="btn" type="button" id="studentCancel" class="secondary">Annuler</button>
-          </div>
-        </form>
-
-        <div class="list-wrap">
-          <table  class="entity-table" id="studentsTable">
-            <thead>
-              <tr>
-                <th>Nom</th>
-                <th>sexe</th>
-                <th>Classe</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+        <div class="form-row">
+          <label>Nom</label>
+          <input name="name" required>
         </div>
-      </section>
 
-      <!-- MATIÈRES -->
-      <section id="panel-subjects" class="panel">
-        <h3 class="ti">Gestion des matieres</h3>
-
-        <form id="subjectForm" class="entity-form">
-          <input type="hidden" name="id">
-
-          <div class="form-row">
-            <label>Nom</label>
-            <input name="name" required>
-          </div>
-
-          <div class="form-row">
-            <label>Code</label>
-            <input name="code" required>
-          </div>
-
-          <div class="form-actions">
-            <button type="submit">Enregistrer</button>
-            <button class="btn" type="button" id="studentCancel" class="secondary">Annuler</button>
-          </div>
-        </form>
-
-        <div class="list-wrap">
-          <table class="entity-table" id="subjectsTable">
-            <thead>
-              <tr>
-                <th>Nom</th>
-                <th>Code</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+        <div class="form-row">
+          <label>Sexe</label>
+          <input name="sexe" required>
         </div>
-      </section>
 
-      <!-- PROFESSEURS -->
-      <section id="panel-teachers" class="panel">
-        <h3 class="ti">Gestion des professeurs</h3>
-
-        <form id="teacherForm" class="entity-form">
-          <input type="hidden" name="id">
-
-          <div class="form-row">
-            <label>Nom</label>
-            <input name="name" required>
-          </div>
-
-          <div class="form-row">
-            <label>Email</label>
-            <input name="email" type="email" required>
-          </div>
-
-          <div class="form-row">
-            <label>Matière</label>
-            <input name="subject" required>
-          </div>
-
-          <div class="form-actions">
-            <button type="submit">Enregistrer</button>
-            <button class="btn" type="button" id="studentCancel" class="secondary">Annuler</button>
-
-          </div>
-        </form>
-
-        <div class="list-wrap">
-          <table class="entity-table" id="teachersTable">
-            <thead>
-              <tr>
-                <th>Nom</th>
-                <th>Email</th>
-                <th>Matière</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+        <div class="form-row">
+          <label>Classe</label>
+          <input name="classroom" required>
         </div>
-      </section>
 
-    </main>
-  </div>
+        <div class="form-actions">
+          <button type="submit">Enregistrer</button>
+            <button class="btn" type="button" id="studentCancel" class="secondary">Annuler</button>
+        </div>
+      </form>
+
+      <div class="list-wrap">
+        <table class="entity-table" id="studentsTable">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Sexe</th>
+              <th>Classe</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== MATIÈRES ===== -->
+    <section id="panel-subjects" class="panel">
+      <h3 class="ti">Gestion des matières</h3>
+
+      <form id="subjectForm" class="entity-form">
+        <input type="hidden" name="id">
+
+        <div class="form-row">
+          <label>Nom</label>
+          <input name="name" required>
+        </div>
+
+        <div class="form-row">
+          <label>Code</label>
+          <input name="code" required>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit">Enregistrer</button>
+            <button class="btn" type="button" id="studentCancel" class="secondary">Annuler</button>
+        </div>
+      </form>
+
+      <div class="list-wrap">
+        <table class="entity-table" id="subjectsTable">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Code</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== PROFESSEURS ===== -->
+    <section id="panel-teachers" class="panel">
+      <h3 class="ti">Gestion des professeurs</h3>
+
+      <form id="teacherForm" class="entity-form">
+        <input type="hidden" name="id">
+
+        <div class="form-row">
+          <label>Nom</label>
+          <input name="name" required>
+        </div>
+
+        <div class="form-row">
+          <label>Email</label>
+          <input name="email" type="email" required>
+        </div>
+
+        <div class="form-row">
+          <label>Matière</label>
+          <input name="subject" required>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit">Enregistrer</button>
+            <button class="btn" type="button" id="studentCancel" class="secondary">Annuler</button>
+        </div>
+      </form>
+
+      <div class="list-wrap">
+        <table class="entity-table" id="teachersTable">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Matière</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== CLASSES ===== -->
+    <section id="panel-classes" class="panel">
+      <h3 class="ti">Gestion des classes</h3>
+
+      <form id="classForm" class="entity-form">
+        <input type="hidden" name="id">
+
+        <div class="form-row">
+          <label>Nom de la classe</label>
+          <input name="name" required>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit">Enregistrer</button>
+            <button class="btn" type="button" id="studentCancel" class="secondary">Annuler</button>
+        </div>
+      </form>
+
+      <div class="list-wrap">
+        <table class="entity-table" id="classesTable">
+          <thead>
+            <tr>
+              <th>Classe</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== NOTES ===== -->
+    <section id="panel-notes" class="panel">
+      <h3 class="ti">Gestion des notes</h3>
+
+      <form id="noteForm" class="entity-form">
+        <input type="hidden" name="id">
+
+        <div class="form-row">
+          <label>Élève</label>
+          <input name="student" required>
+        </div>
+
+        <div class="form-row">
+          <label>Matière</label>
+          <input name="subject" required>
+        </div>
+
+        <div class="form-row">
+          <label>Note</label>
+          <input type="number" name="value" min="0" max="20" required>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit">Enregistrer</button>
+            <button class="btn" type="button" id="studentCancel" class="secondary">Annuler</button>
+        </div>
+      </form>
+
+      <div class="list-wrap">
+        <table class="entity-table" id="notesTable">
+          <thead>
+            <tr>
+              <th>Élève</th>
+              <th>Matière</th>
+              <th>Note</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
 
 </body>
 </html>

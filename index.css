@@ -554,3 +554,6 @@ input[type="hidden"] {
     margin: 0 !important;
   }
 }
+.s{
+  display: flex;
+}
